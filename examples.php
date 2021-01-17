@@ -6,7 +6,7 @@ $post_ids = [
 ];
 
 //setup thumbnails data of posts
-$Thumbnails = Attachments::setup_post_thumbnails($post_ids);
+$Thumbnails = OptAttachments::setup_post_thumbnails($post_ids);
 
 //the example of loop
 foreach($post_ids as $post_id){
@@ -24,7 +24,7 @@ foreach($post_ids as $post_id){
 
 //we can specify a meta_key of custom thumbnail of posts by the second argument
 //and force get an url of the attachment for more right the building source of an image if need
-$Thumbnails = Attachments::setup_post_thumbnails($post_ids, 'custom_thumbnail', true);
+$Thumbnails = OptAttachments::setup_post_thumbnails($post_ids, 'custom_thumbnail', true);
 
 
 
