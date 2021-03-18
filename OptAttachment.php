@@ -39,8 +39,7 @@ class OptAttachment{
 
 		$default_attr = array(
 			'src'   => $src,
-			'class' => "attachment-$size_class size-$size_class",
-			//'alt'   => trim( strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) ),
+			'class' => "attachment-$size_class size-$size_class"
 		);
 
 		if ( wp_lazy_loading_enabled( 'img', 'wp_get_attachment_image' ) ) {

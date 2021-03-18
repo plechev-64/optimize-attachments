@@ -29,11 +29,11 @@ class OptAttachments{
 		$attachments = [];
 		if($thumbnails = self::get_metadata_thumbnails($post_ids, $meta_key, $get_attached_file)){
 			foreach($thumbnails as $thumbnail){
-				$attachments[$thumbnail->post_id] = new Attachment($thumbnail->attach_id, maybe_unserialize($thumbnail->metadata), $thumbnail->attached_file);
+				$attachments[$thumbnail->post_id] = new OptAttachment($thumbnail->attach_id, maybe_unserialize($thumbnail->metadata), $thumbnail->attached_file);
 			}
 		}
 
-		return new Attachments($attachments);
+		return new OptAttachments($attachments);
 
 	}
 
@@ -42,17 +42,17 @@ class OptAttachments{
 		$attachments = [];
 		if($thumbnails = self::get_metadata_attachments($attach_ids)){
 			foreach($thumbnails as $thumbnail){
-				$attachments[$thumbnail->attach_id] = new Attachment($thumbnail->attach_id, maybe_unserialize($thumbnail->metadata));
+				$attachments[$thumbnail->attach_id] = new OptAttachment($thumbnail->attach_id, maybe_unserialize($thumbnail->metadata));
 			}
 		}
 
-		return new Attachments($attachments);
+		return new OptAttachments($attachments);
 
 	}
 
 	static function get_query_attachments_request($attach_ids){
 
-		return DBQuery::tbl(new Postmeta_Query())->select([
+		return DBQuery::tbl(new PostmetaQuery())->select([
 			'attach_id' => 'post_id',
 			'metadata' => 'meta_value'
 		])->where([
@@ -68,7 +68,7 @@ class OptAttachments{
 
 	static function get_query_thumbnails_request($post_ids, $meta_key = '_thumbnail_id', $get_attached_file = false){
 
-		$query = DBQuery::tbl(new Postmeta_Query())->select([
+		$query = DBQuery::tbl(new PostmetaQuery())->select([
 			'post_id',
 			'attach_id' => 'meta_value'
 		])->where([
@@ -76,7 +76,7 @@ class OptAttachments{
 			'post_id__in' => $post_ids,
 		])->join(
 			['meta_value', 'post_id'],
-			DBQuery::tbl(new Postmeta_Query('metadata'))->select(['metadata' => 'meta_value'])->where([
+			DBQuery::tbl(new PostmetaQuery('metadata'))->select(['metadata' => 'meta_value'])->where([
 				'meta_key' => '_wp_attachment_metadata'
 			])
 		)->limit(-1);
@@ -84,7 +84,7 @@ class OptAttachments{
 		if($get_attached_file){
 			$query->join(
 				['meta_value', 'post_id'],
-				DBQuery::tbl(new Postmeta_Query('file'))->select(['attached_file' => 'meta_value'])->where([
+				DBQuery::tbl(new PostmetaQuery('file'))->select(['attached_file' => 'meta_value'])->where([
 					'meta_key' => '_wp_attached_file'
 				])
 			);
