@@ -24,6 +24,17 @@ class OptAttachments{
 		}
 	}
 
+	static function setup_post_thumbnails_by_object($arrayObjects, $propName, $meta_key = '_thumbnail_id', $get_attached_file = false){
+
+		$post_ids = [];
+		foreach($arrayObjects as $object){
+			$post_ids[] = $object->$propName;
+		}
+
+		return self::setup_post_thumbnails($post_ids);
+
+	}
+
 	static function setup_post_thumbnails($post_ids, $meta_key = '_thumbnail_id', $get_attached_file = false){
 
 		$attachments = [];
@@ -52,7 +63,7 @@ class OptAttachments{
 
 	static function get_query_attachments_request($attach_ids){
 
-		return DBQuery::tbl(new PostmetaQuery())->select([
+		return DBQuery::tbl(new PostMetaQuery())->select([
 			'attach_id' => 'post_id',
 			'metadata' => 'meta_value'
 		])->where([
@@ -68,7 +79,7 @@ class OptAttachments{
 
 	static function get_query_thumbnails_request($post_ids, $meta_key = '_thumbnail_id', $get_attached_file = false){
 
-		$query = DBQuery::tbl(new PostmetaQuery())->select([
+		$query = DBQuery::tbl(new PostMetaQuery())->select([
 			'post_id',
 			'attach_id' => 'meta_value'
 		])->where([
@@ -76,7 +87,7 @@ class OptAttachments{
 			'post_id__in' => $post_ids,
 		])->join(
 			['meta_value', 'post_id'],
-			DBQuery::tbl(new PostmetaQuery('metadata'))->select(['metadata' => 'meta_value'])->where([
+			DBQuery::tbl(new PostMetaQuery('metadata'))->select(['metadata' => 'meta_value'])->where([
 				'meta_key' => '_wp_attachment_metadata'
 			])
 		)->limit(-1);
@@ -84,7 +95,7 @@ class OptAttachments{
 		if($get_attached_file){
 			$query->join(
 				['meta_value', 'post_id'],
-				DBQuery::tbl(new PostmetaQuery('file'))->select(['attached_file' => 'meta_value'])->where([
+				DBQuery::tbl(new PostMetaQuery('file'))->select(['attached_file' => 'meta_value'])->where([
 					'meta_key' => '_wp_attached_file'
 				])
 			);
