@@ -56,8 +56,8 @@ class OptAttachment{
 			if ( is_array( $imagedata ) ) {
 
 				$size_array = array( absint( $width ), absint( $height ) );
-				$srcset     = wp_calculate_image_srcset( $size_array, $src, $imagedata, $this->attach_id );
-				$sizes      = wp_calculate_image_sizes( $size_array, $src, $imagedata, $this->attach_id );
+				$srcset     = wp_calculate_image_srcset( $size_array, $src, $this->metadata, $this->attach_id );
+				$sizes      = wp_calculate_image_sizes( $size_array, $src, $this->metadata, $this->attach_id );
 
 				if ( $srcset && ( $sizes || ! empty( $attr['sizes'] ) ) ) {
 					$attr['srcset'] = $srcset;
@@ -139,12 +139,11 @@ class OptAttachment{
 
 			} elseif ( ! empty( $imagedata['sizes']['thumbnail'] ) && $imagedata['sizes']['thumbnail']['width'] >= $size[0] && $imagedata['sizes']['thumbnail']['width'] >= $size[1] ) {
 				$data = $imagedata['sizes']['thumbnail'];
-			} else {
-				return false;
 			}
 
-			// Constrain the width and height attributes to the requested values.
-			list( $data['width'], $data['height'] ) = image_constrain_size_for_editor( $data['width'], $data['height'], $size );
+			if(!empty($data)){
+				list( $data['width'], $data['height'] ) = image_constrain_size_for_editor( $data['width'], $data['height'], $size );
+			}
 
 		} elseif ( ! empty( $imagedata['sizes'][ $size ] ) ) {
 			$data = $imagedata['sizes'][ $size ];
@@ -160,7 +159,10 @@ class OptAttachment{
 				}
 			}
 
-			return false;
+			if(!empty($imagedata['sizes']['full'])){
+				return $this->get_image_data([$imagedata['sizes']['full']['width'], $imagedata['sizes']['full']['height']]);
+			}
+
 		}
 
 		// Include the full filesystem path of the intermediate file.
@@ -169,7 +171,7 @@ class OptAttachment{
 			//$data['url']  = path_join( dirname( $file_url ), $data['file'] );
 			$data['path'] = path_join( dirname( $imagedata['file'] ), $data['file'] );
 			$file_url = $this->get_attachment_url();
-			$data['url'] = $file_url? path_join( dirname( $file_url ), $data['file'] ): '';
+			$data['url'] = $file_url? path_join( dirname( $file_url ), $data['file'] ): get_home_url(null, 'wp-content/uploads/'.$data['path']);
 		}
 
 		return $data;
