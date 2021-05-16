@@ -82,7 +82,7 @@ class OptAttachment{
 
 	function get_image_data( $size = 'thumbnail' ) {
 
-		if ( ! $size || ! is_array( $this->metadata ) || empty( $this->metadata['sizes'] ) ) {
+		if ( ! $size || ! is_array( $this->metadata ) ) {
 			return false;
 		}
 
@@ -144,6 +144,7 @@ class OptAttachment{
 			if(!empty($data)){
 				list( $data['width'], $data['height'] ) = image_constrain_size_for_editor( $data['width'], $data['height'], $size );
 			}
+
 
 		} elseif ( ! empty( $imagedata['sizes'][ $size ] ) ) {
 			$data = $imagedata['sizes'][ $size ];
