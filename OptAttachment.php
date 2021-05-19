@@ -12,7 +12,7 @@ class OptAttachment{
 		$this->attached_file = $attached_file;
 	}
 
-	function get_url($size){
+	public function get_url($size){
 		$imageData = $this->get_image_data($size);
 
 		if($imageData['url']){
@@ -22,7 +22,7 @@ class OptAttachment{
 		return get_home_url(null, 'wp-content/uploads/'.$imageData['path']);
 	}
 
-	function get_image( $size = 'thumbnail', $attr = '' ) {
+	public function get_image( $size = 'thumbnail', $attr = '' ) {
 
 		$src = $this->get_url($size);
 		$imagedata = $this->get_image_data($size); //$this->metadata;
@@ -80,7 +80,7 @@ class OptAttachment{
 		return $html;
 	}
 
-	function get_image_data( $size = 'thumbnail' ) {
+	protected function get_image_data( $size = 'thumbnail' ) {
 
 		if ( ! $size || ! is_array( $this->metadata ) ) {
 			return false;
@@ -150,7 +150,7 @@ class OptAttachment{
 			$data = $imagedata['sizes'][ $size ];
 		}
 
-		// если данные не найдены
+		// if the data is not found
 		if ( empty( $data ) ) {
 
 			if(!is_array($size)){ //если размер задан строкой
@@ -179,7 +179,7 @@ class OptAttachment{
 
 	}
 
-	function get_attachment_url() {
+	protected function get_attachment_url() {
 
 		$url = '';
 
@@ -204,7 +204,7 @@ class OptAttachment{
 		return $url;
 	}
 
-	static function get_image_sizes( $unset_disabled = true ) {
+	protected static function get_image_sizes( $unset_disabled = true ) {
 		$wais = & $GLOBALS['_wp_additional_image_sizes'];
 
 		$sizes = array();
